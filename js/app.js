@@ -12,15 +12,25 @@
 
 	// Lazy-load a lightweight map script (simulation) when user requests it
 	openMapBtn?.addEventListener('click', async () => {
+		// If an iframe is already embedded, just announce it's ready.
+		if(mapRoot && mapRoot.querySelector && mapRoot.querySelector('iframe')){
+			announce('Map is ready');
+			return;
+		}
+
+		// Fallback lazy-insert an embedded Google Maps iframe if the static iframe is not present
 		announce('Loading map…');
 		mapRoot.textContent = 'Loading map…';
-		// Simulate dynamic import or external map script insertion
-		await new Promise(r=>setTimeout(r,700));
+		await new Promise(r=>setTimeout(r,600));
 		mapRoot.textContent = '';
-		const mapBox = document.createElement('div');
-		mapBox.textContent = '🌊 Interactive map would appear here (lazy-loaded)';
-		mapBox.style.padding = '1rem';
-		mapRoot.appendChild(mapBox);
+		const iframe = document.createElement('iframe');
+		iframe.title = 'ShoreSquad — Next Cleanup at Pasir Ris';
+		iframe.src = 'https://www.google.com/maps?q=1.381497,103.955574(Next%20Cleanup)&z=17&output=embed';
+		iframe.loading = 'lazy';
+		iframe.style.width = '100%';
+		iframe.style.height = '420px';
+		iframe.style.border = '0';
+		mapRoot.appendChild(iframe);
 		announce('Map loaded');
 	});
 
